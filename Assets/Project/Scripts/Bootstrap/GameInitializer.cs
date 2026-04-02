@@ -18,7 +18,6 @@ public sealed class GameInitializer : MonoBehaviour
     [SerializeField]
     private SlotMachineView slotMachineView;
 
-    [Header("Target Shooting")]
     [SerializeField]
     private TargetShootingUI targetShootingUI;
 
@@ -27,7 +26,6 @@ public sealed class GameInitializer : MonoBehaviour
 
     private void Awake()
     {
-        // В Unity Console можно вывести путь:
         Debug.Log(Application.persistentDataPath);
 
         JsonInventoryRepository repository = new JsonInventoryRepository();
@@ -88,7 +86,7 @@ public sealed class GameInitializer : MonoBehaviour
             slot.Quantity = 0;
         }
 
-        model.Coins = 0;
+        model.Coins = 250;
     }
 
     private void RestoreState(InventoryModel model, InventorySaveData saveData)

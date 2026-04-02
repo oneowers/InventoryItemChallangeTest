@@ -3,7 +3,6 @@ using Project.UI;
 public sealed class InventoryPresenter
 {
     private const int AddCoinsAmount = 100;
-    private const int DefaultUnlockCost = 0;
 
     private readonly InventoryModel model;
     private readonly InventoryService service;
@@ -37,7 +36,7 @@ public sealed class InventoryPresenter
         this.model.OnCoinsChanged += this.HandleCoinsChanged;
         this.model.OnWeightChanged += this.HandleWeightChanged;
 
-        this.inventoryView.Initialize(this.model.Slots, DefaultUnlockCost);
+        this.inventoryView.Initialize(this.model.Slots, this.service.SlotUnlockCost);
         this.inventoryView.RenderAll(this.model.Slots);
         this.hudView.SetCoins(this.model.Coins);
         this.hudView.SetWeight(this.model.TotalWeight);
@@ -45,11 +44,9 @@ public sealed class InventoryPresenter
 
     private void HandleShootClicked()
     {
-        // Каждый выстрел стоит 1 патрон
         if (!this.service.TryConsumeBullet())
             return;
 
-        // Показать панель → выстрел → скрыть; заработанные монеты добавить в модель
         this.targetShootingUI?.ShowAndShoot(coins =>
         {
             if (coins > 0)

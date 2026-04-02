@@ -7,7 +7,7 @@ public sealed class SlotMachineService
     private const int ReelCount = 3;
     private const int JackpotCoinsReward = 200;
     private const int AmmoRewardAmount = 30;
-    private const int JackpotChanceDivisor = 20;
+    private const int JackpotChanceDivisor = 200;
 
     private readonly InventoryService inventoryService;
     private readonly GameDatabaseSO database;

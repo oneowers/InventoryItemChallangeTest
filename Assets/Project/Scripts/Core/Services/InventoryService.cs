@@ -22,6 +22,8 @@ public sealed class InventoryService
         this.repository = repository;
     }
 
+    public int SlotUnlockCost => this.config.SlotUnlockCost;
+
     public void ShootRandom()
     {
         List<WeaponAmmoPair> validPairs = new List<WeaponAmmoPair>();
