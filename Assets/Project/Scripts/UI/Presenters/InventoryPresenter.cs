@@ -23,8 +23,6 @@ public sealed class InventoryPresenter
     public void Initialize()
     {
         this.hudView.OnShootClicked += this.HandleShootClicked;
-        this.hudView.OnAddAmmoClicked += this.HandleAddAmmoClicked;
-        this.hudView.OnAddItemClicked += this.HandleAddItemClicked;
         this.hudView.OnRemoveItemClicked += this.HandleRemoveItemClicked;
         this.hudView.OnAddCoinsClicked += this.HandleAddCoinsClicked;
 
@@ -43,16 +41,6 @@ public sealed class InventoryPresenter
     private void HandleShootClicked()
     {
         this.service.ShootRandom();
-    }
-
-    private void HandleAddAmmoClicked()
-    {
-        this.service.AddAmmo();
-    }
-
-    private void HandleAddItemClicked()
-    {
-        this.service.AddRandomItem();
     }
 
     private void HandleRemoveItemClicked()

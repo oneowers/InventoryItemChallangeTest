@@ -14,6 +14,12 @@ public sealed class GameInitializer : MonoBehaviour
     [SerializeField]
     private HUDView hudView;
 
+    [SerializeField]
+    private SlotMachineView slotMachineView;
+
+    [SerializeField]
+    private int spinCost = 50;
+
     private void Awake()
     {
         // В Unity Console можно вывести путь:
@@ -38,6 +44,10 @@ public sealed class GameInitializer : MonoBehaviour
         InventoryPresenter presenter = new InventoryPresenter(model, inventoryService, this.inventoryView, this.hudView);
         presenter.Initialize();
         this.inventoryView.InitializeDragDrop(inventoryService);
+
+        SlotMachineService slotMachineService = new SlotMachineService(inventoryService, this.database, this.spinCost);
+        SlotMachinePresenter slotMachinePresenter = new SlotMachinePresenter(slotMachineService, this.slotMachineView, this.hudView);
+        slotMachinePresenter.Initialize();
     }
 
     private InventoryModel CreateModelWithSlots(int totalSlots)

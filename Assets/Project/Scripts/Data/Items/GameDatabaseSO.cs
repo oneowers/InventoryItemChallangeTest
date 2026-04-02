@@ -8,6 +8,9 @@ public sealed class GameDatabaseSO : ScriptableObject
     [SerializeField]
     private List<BaseItemSO> allItems = new List<BaseItemSO>();
 
+    [SerializeField]
+    private BaseItemSO jackpotSymbol;
+
     private Dictionary<string, BaseItemSO> _cache = new Dictionary<string, BaseItemSO>();
 
     public IReadOnlyList<BaseItemSO> AllItems
@@ -18,9 +21,23 @@ public sealed class GameDatabaseSO : ScriptableObject
         }
     }
 
+    public BaseItemSO JackpotSymbol
+    {
+        get
+        {
+            return this.jackpotSymbol;
+        }
+    }
+
     private void OnEnable()
     {
-        this._cache = this.allItems
+        IEnumerable<BaseItemSO> cacheSource = this.allItems;
+        if (this.jackpotSymbol != null)
+        {
+            cacheSource = this.allItems.Concat(new[] { this.jackpotSymbol });
+        }
+
+        this._cache = cacheSource
             .Where(item => item != null && !string.IsNullOrWhiteSpace(item.ItemId))
             .GroupBy(item => item.ItemId)
             .ToDictionary(group => group.Key, group => group.First());
@@ -57,6 +74,14 @@ public sealed class GameDatabaseSO : ScriptableObject
             if (!uniqueIds.Add(item.ItemId))
             {
                 Debug.LogWarning($"Duplicate itemId '{item.ItemId}' found in '{this.name}'.", this);
+            }
+        }
+
+        if (this.jackpotSymbol != null && !string.IsNullOrWhiteSpace(this.jackpotSymbol.ItemId))
+        {
+            if (!uniqueIds.Add(this.jackpotSymbol.ItemId))
+            {
+                Debug.LogWarning($"Duplicate itemId '{this.jackpotSymbol.ItemId}' found in '{this.name}'.", this);
             }
         }
     }

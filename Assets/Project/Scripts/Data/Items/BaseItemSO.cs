@@ -21,6 +21,9 @@ public abstract class BaseItemSO : ScriptableObject
     [SerializeField]
     private ItemType itemType;
 
+    [SerializeField]
+    private float spinWeight;
+
     public string ItemId
     {
         get
@@ -69,6 +72,14 @@ public abstract class BaseItemSO : ScriptableObject
         }
     }
 
+    public float SpinWeight
+    {
+        get
+        {
+            return this.spinWeight;
+        }
+    }
+
     protected virtual void OnValidate()
     {
         const float MinimumWeightPerUnit = 0f;
@@ -87,6 +98,11 @@ public abstract class BaseItemSO : ScriptableObject
         if (this.maxStackSize < MinimumStackSize)
         {
             this.maxStackSize = MinimumStackSize;
+        }
+
+        if (this.spinWeight < MinimumWeightPerUnit)
+        {
+            this.spinWeight = MinimumWeightPerUnit;
         }
     }
 }

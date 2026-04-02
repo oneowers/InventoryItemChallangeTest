@@ -84,8 +84,13 @@ public sealed class InventoryService
 
     public void AddAmmo()
     {
-        this.AddAmmoByType(ItemType.PistolAmmo);
-        this.AddAmmoByType(ItemType.RifleAmmo);
+        this.AddAmmoByType(ItemType.PistolAmmo, 30);
+        this.AddAmmoByType(ItemType.RifleAmmo, 30);
+    }
+
+    public void AddAmmo(AmmoType ammoType, int amount)
+    {
+        this.AddAmmoByType(this.GetAmmoItemType(ammoType), amount);
     }
 
     public void AddRandomItem()
@@ -166,6 +171,83 @@ public sealed class InventoryService
         this.model.Coins += amount;
         this.model.NotifyCoinsChanged();
         this.repository.Save(this.model);
+    }
+
+    public bool TrySpendCoins(int amount)
+    {
+        if (amount <= 0)
+        {
+            return true;
+        }
+
+        if (this.model.Coins < amount)
+        {
+            Debug.LogError("[Inventory] Error: not enough coins for spin");
+            return false;
+        }
+
+        this.model.Coins -= amount;
+        this.model.NotifyCoinsChanged();
+        this.repository.Save(this.model);
+        return true;
+    }
+
+    public void AddItem(BaseItemSO item, int quantity)
+    {
+        if (item == null || quantity <= 0)
+        {
+            Debug.LogError("[Inventory] Error: invalid item add request");
+            return;
+        }
+
+        int remaining = quantity;
+
+        for (int index = 0; index < this.model.Slots.Count; index++)
+        {
+            if (remaining <= 0)
+            {
+                break;
+            }
+
+            SlotModel slot = this.model.Slots[index];
+            if (slot == null || !slot.IsUnlocked || slot.IsEmpty)
+            {
+                continue;
+            }
+
+            if (slot.Item.ItemId != item.ItemId || slot.Quantity >= slot.Item.MaxStackSize)
+            {
+                continue;
+            }
+
+            int availableSpace = slot.Item.MaxStackSize - slot.Quantity;
+            int fill = Mathf.Min(remaining, availableSpace);
+            slot.Quantity += fill;
+            remaining -= fill;
+
+            Debug.Log($"[Inventory] Added: {fill} {item.DisplayName} -> slot {slot.Index}");
+            this.model.NotifySlotChanged(slot);
+        }
+
+        while (remaining > 0)
+        {
+            SlotModel emptySlot = this.FindFirstEmptyUnlockedSlot();
+            if (emptySlot == null)
+            {
+                Debug.LogError($"[Inventory] Error: no free slots for {item.DisplayName}");
+                break;
+            }
+
+            emptySlot.Item = item;
+            emptySlot.Quantity = Mathf.Min(remaining, item.MaxStackSize);
+            remaining -= emptySlot.Quantity;
+
+            Debug.Log($"[Inventory] Added: {emptySlot.Quantity} {item.DisplayName} -> slot {emptySlot.Index}");
+            this.model.NotifySlotChanged(emptySlot);
+        }
+
+        this.repository.Save(this.model);
+        this.model.NotifyWeightChanged();
     }
 
     public void MoveItem(int fromIndex, int toIndex)
@@ -260,7 +342,7 @@ public sealed class InventoryService
         return true;
     }
 
-    private void AddAmmoByType(ItemType ammoType)
+    private void AddAmmoByType(ItemType ammoType, int amount)
     {
         BaseItemSO ammoItem = this.FindItemByType(ammoType);
         if (ammoItem == null)
@@ -269,7 +351,7 @@ public sealed class InventoryService
             return;
         }
 
-        int remaining = 30;
+        int remaining = amount;
 
         for (int index = 0; index < this.model.Slots.Count; index++)
         {

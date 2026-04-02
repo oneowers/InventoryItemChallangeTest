@@ -15,10 +15,7 @@ public sealed class HUDView : MonoBehaviour
     private Button shootButton;
 
     [SerializeField]
-    private Button addAmmoButton;
-
-    [SerializeField]
-    private Button addItemButton;
+    private Button spinButton;
 
     [SerializeField]
     private Button removeItemButton;
@@ -28,9 +25,7 @@ public sealed class HUDView : MonoBehaviour
 
     public event Action OnShootClicked;
 
-    public event Action OnAddAmmoClicked;
-
-    public event Action OnAddItemClicked;
+    public event Action OnSpinClicked;
 
     public event Action OnRemoveItemClicked;
 
@@ -39,8 +34,7 @@ public sealed class HUDView : MonoBehaviour
     private void Awake()
     {
         this.shootButton.onClick.AddListener(this.HandleShootClicked);
-        this.addAmmoButton.onClick.AddListener(this.HandleAddAmmoClicked);
-        this.addItemButton.onClick.AddListener(this.HandleAddItemClicked);
+        this.spinButton.onClick.AddListener(this.HandleSpinClicked);
         this.removeItemButton.onClick.AddListener(this.HandleRemoveItemClicked);
         this.addCoinsButton.onClick.AddListener(this.HandleAddCoinsClicked);
     }
@@ -55,19 +49,19 @@ public sealed class HUDView : MonoBehaviour
         this.weightText.text = $"Weight: {kg:F2} kg";
     }
 
+    public void SetSpinInteractable(bool isInteractable)
+    {
+        this.spinButton.interactable = isInteractable;
+    }
+
     private void HandleShootClicked()
     {
         this.OnShootClicked?.Invoke();
     }
 
-    private void HandleAddAmmoClicked()
+    private void HandleSpinClicked()
     {
-        this.OnAddAmmoClicked?.Invoke();
-    }
-
-    private void HandleAddItemClicked()
-    {
-        this.OnAddItemClicked?.Invoke();
+        this.OnSpinClicked?.Invoke();
     }
 
     private void HandleRemoveItemClicked()

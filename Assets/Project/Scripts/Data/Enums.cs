@@ -7,7 +7,8 @@ public enum ItemType
     Jacket,
     BulletproofVest,
     Cap,
-    Helmet
+    Helmet,
+    JackpotSymbol
 }
 
 public enum AmmoType
