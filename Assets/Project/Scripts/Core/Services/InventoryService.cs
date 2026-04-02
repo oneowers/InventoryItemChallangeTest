@@ -173,6 +173,44 @@ public sealed class InventoryService
         this.repository.Save(this.model);
     }
 
+    /// <summary>
+    /// Списывает 1 патрон (PistolAmmo или RifleAmmo) из инвентаря.
+    /// Возвращает true если патрон найден и списан, иначе false.
+    /// </summary>
+    public bool TryConsumeBullet()
+    {
+        for (int index = 0; index < this.model.Slots.Count; index++)
+        {
+            SlotModel slot = this.model.Slots[index];
+            if (slot == null || slot.IsEmpty || !slot.IsUnlocked)
+            {
+                continue;
+            }
+
+            if (slot.Item.ItemType != ItemType.PistolAmmo && slot.Item.ItemType != ItemType.RifleAmmo)
+            {
+                continue;
+            }
+
+            slot.Quantity--;
+
+            if (slot.Quantity == 0)
+            {
+                slot.Item = null;
+                slot.Quantity = 0;
+            }
+
+            Debug.Log($"[InventoryService] Consumed 1 bullet from slot {slot.Index} for target shooting");
+            this.model.NotifySlotChanged(slot);
+            this.repository.Save(this.model);
+            this.model.NotifyWeightChanged();
+            return true;
+        }
+
+        Debug.LogWarning("[InventoryService] No bullets available for target shooting");
+        return false;
+    }
+
     public bool TrySpendCoins(int amount)
     {
         if (amount <= 0)

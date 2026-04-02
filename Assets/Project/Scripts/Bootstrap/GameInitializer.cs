@@ -1,3 +1,4 @@
+using Project.UI;
 using UnityEngine;
 
 public sealed class GameInitializer : MonoBehaviour
@@ -16,6 +17,10 @@ public sealed class GameInitializer : MonoBehaviour
 
     [SerializeField]
     private SlotMachineView slotMachineView;
+
+    [Header("Target Shooting")]
+    [SerializeField]
+    private TargetShootingUI targetShootingUI;
 
     [SerializeField]
     private int spinCost = 50;
@@ -41,7 +46,8 @@ public sealed class GameInitializer : MonoBehaviour
         }
 
         InventoryService inventoryService = new InventoryService(model, this.database, this.config, repository);
-        InventoryPresenter presenter = new InventoryPresenter(model, inventoryService, this.inventoryView, this.hudView);
+        InventoryPresenter presenter = new InventoryPresenter(
+            model, inventoryService, this.inventoryView, this.hudView, this.targetShootingUI);
         presenter.Initialize();
         this.inventoryView.InitializeDragDrop(inventoryService);
 

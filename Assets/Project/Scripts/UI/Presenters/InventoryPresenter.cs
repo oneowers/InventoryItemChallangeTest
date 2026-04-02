@@ -1,3 +1,5 @@
+using Project.UI;
+
 public sealed class InventoryPresenter
 {
     private const int AddCoinsAmount = 100;
@@ -7,17 +9,20 @@ public sealed class InventoryPresenter
     private readonly InventoryService service;
     private readonly InventoryView inventoryView;
     private readonly HUDView hudView;
+    private readonly TargetShootingUI targetShootingUI;
 
     public InventoryPresenter(
         InventoryModel model,
         InventoryService service,
         InventoryView inventoryView,
-        HUDView hudView)
+        HUDView hudView,
+        TargetShootingUI targetShootingUI = null)
     {
         this.model = model;
         this.service = service;
         this.inventoryView = inventoryView;
         this.hudView = hudView;
+        this.targetShootingUI = targetShootingUI;
     }
 
     public void Initialize()
@@ -40,7 +45,16 @@ public sealed class InventoryPresenter
 
     private void HandleShootClicked()
     {
-        this.service.ShootRandom();
+        // Каждый выстрел стоит 1 патрон
+        if (!this.service.TryConsumeBullet())
+            return;
+
+        // Показать панель → выстрел → скрыть; заработанные монеты добавить в модель
+        this.targetShootingUI?.ShowAndShoot(coins =>
+        {
+            if (coins > 0)
+                this.service.AddCoins(coins);
+        });
     }
 
     private void HandleRemoveItemClicked()
