@@ -18,5 +18,6 @@ MonoBehaviour:
   weightPerUnit: 1
   maxStackSize: 1
   itemType: 2
+  spinWeight: 20
   compatibleAmmo: 0
   damagePerShot: 10

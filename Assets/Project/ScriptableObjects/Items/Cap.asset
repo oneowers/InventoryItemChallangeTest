@@ -18,5 +18,6 @@ MonoBehaviour:
   weightPerUnit: 0.2
   maxStackSize: 1
   itemType: 6
+  spinWeight: 40
   armorSlot: 0
   defenseValue: 3

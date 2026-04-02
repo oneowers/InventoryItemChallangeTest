@@ -18,3 +18,4 @@ MonoBehaviour:
   weightPerUnit: 0.01
   maxStackSize: 50
   itemType: 0
+  spinWeight: 50

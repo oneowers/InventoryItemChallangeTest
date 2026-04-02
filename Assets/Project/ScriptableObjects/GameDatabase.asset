@@ -21,3 +21,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 33ee06560ce354254ba6ecd3af735b0c, type: 2}
   - {fileID: 11400000, guid: 65a1416bd790446e48adc0327b0503a6, type: 2}
   - {fileID: 11400000, guid: 13376aabe9ba94ba7b64c9f6dafae7d9, type: 2}
+  jackpotSymbol: {fileID: 11400000, guid: 5042b2d7fd19c4c32b10a7889df4cf75, type: 2}
